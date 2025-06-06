@@ -1,0 +1,63 @@
+{
+  "name": "RestoInspect - Field Reporting",
+  "short_name": "RestoInspect",
+  "description": "Mobile-first property inspection and damage reporting application",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#1f2937",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Inspection",
+      "short_name": "New",
+      "url": "/inspection/address",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "My Submissions",
+      "short_name": "Reports",
+      "url": "/submissions",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "any"
+        }
+      ]
+    }
+  ]
+} 

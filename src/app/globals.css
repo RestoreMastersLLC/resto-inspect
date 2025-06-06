@@ -1,26 +1,528 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #111827;
+  --foreground: #f9fafb;
+  --font-inter: 'Inter', system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #111827 100%);
+  background-attachment: fixed;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  min-height: 100vh;
+  font-family: var(--font-inter);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+/* Touch-friendly button sizing */
+.btn-touch {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Safe area handling for mobile devices */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Custom scroll styles */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Focus styles for accessibility */
+.focus-visible:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Loading states */
+.loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Slide animations for mobile navigation */
+.slide-in-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.slide-out-left {
+  animation: slideOutLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Success animation */
+.success-bounce {
+  animation: successBounce 0.6s ease-out;
+}
+
+@keyframes successBounce {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Image preview overlay */
+.image-overlay {
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Touch ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.ripple:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Offline indicator */
+.offline-badge {
+  background: linear-gradient(45deg, #fbbf24, #f59e0b);
+  animation: offline-pulse 2s infinite;
+}
+
+@keyframes offline-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Photo grid for inspection media */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .photo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+/* Camera viewfinder effect */
+.camera-viewfinder {
+  position: relative;
+}
+
+.camera-viewfinder::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* Map pin animation */
+.map-pin {
+  animation: mapPinDrop 0.5s ease-out;
+}
+
+@keyframes mapPinDrop {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Status badge styles */
+.status-pending {
+  background-color: rgb(113 63 18);
+  color: rgb(253 224 71);
+}
+
+.status-completed {
+  background-color: rgb(20 83 45);
+  color: rgb(134 239 172);
+}
+
+.status-in-progress {
+  background-color: rgb(30 58 138);
+  color: rgb(147 197 253);
+}
+
+.status-rejected {
+  background-color: rgb(127 29 29);
+  color: rgb(252 165 165);
+}
+
+/* Media upload progress */
+.upload-progress {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) var(--progress, 0%), transparent var(--progress, 0%));
+}
+
+/* Pull to refresh indicator */
+.pull-to-refresh {
+  transform: translateY(var(--pull-distance, 0px));
+  transition: transform 0.2s ease-out;
+}
+
+/* Haptic feedback classes (for native app integration) */
+.haptic-light,
+.haptic-medium,
+.haptic-heavy {
+  transition: transform 0.1s ease-out;
+}
+
+.haptic-light:active {
+  transform: scale(0.98);
+}
+
+.haptic-medium:active {
+  transform: scale(0.96);
+}
+
+.haptic-heavy:active {
+  transform: scale(0.94);
+}
+
+/* Additional responsive utilities */
+.container-mobile {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-mobile {
+    max-width: 640px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-mobile {
+    max-width: 768px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Mobile-optimized button styles */
+.btn-primary {
+  background: linear-gradient(135deg, rgb(37 99 235), rgb(29 78 216));
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgb(29 78 216), rgb(30 64 175));
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(1);
+}
+
+.btn-primary:disabled {
+  background: rgb(75 85 99);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background-color: rgb(75 85 99);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+  background-color: rgb(55 65 81);
+}
+
+/* Card components */
+.card {
+  background-color: rgb(31 41 55);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(55 65 81);
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 1.5rem;
+  }
+}
+
+.card-hover {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Input styles */
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgb(31 41 55);
+  border: 1px solid rgb(55 65 81);
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.input-field::placeholder {
+  color: rgb(156 163 175);
+}
+
+.input-field:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: rgb(59 130 246);
+  border-color: rgb(59 130 246);
+}
+
+/* Mobile navigation improvements */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgb(31 41 55);
+  border-top: 1px solid rgb(55 65 81);
+  padding: 0.75rem;
+  z-index: 50;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.mobile-nav-item:hover {
+  background-color: rgb(55 65 81);
+}
+
+/* Status indicator improvements */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  gap: 0.25rem;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid white;
+  width: 1rem;
+  height: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom vertical spacing utilities */
+.mb-18 {
+  margin-bottom: 4.5rem; /* 72px */
+}
+
+.mb-20 {
+  margin-bottom: 5rem; /* 80px */
+}
+
+.mb-24 {
+  margin-bottom: 6rem; /* 96px */
+}
+
+.mb-26 {
+  margin-bottom: 6.5rem; /* 104px */
+}
+
+.pb-32 {
+  padding-bottom: 8rem; /* 128px */
+}
+
+.pb-36 {
+  padding-bottom: 9rem; /* 144px */
+}
+
+@media (min-width: 640px) {
+  .sm\:mb-24 {
+    margin-bottom: 6rem;
+  }
+  
+  .sm\:mb-26 {
+    margin-bottom: 6.5rem;
+  }
+  
+  .sm\:pb-36 {
+    padding-bottom: 9rem;
+  }
+}
+
+/* Improved vertical rhythm for text elements */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.3;
+  margin-bottom: 0.5em;
+}
+
+p {
+  line-height: 1.6;
+  margin-bottom: 1.2em;
+}
+
+/* Ensure proper text rendering on mobile */
+@media (max-width: 768px) {
+  body {
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Improve touch targets */
+  button, 
+  .btn-touch,
+  a,
+  input,
+  textarea,
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
