@@ -1,58 +1,58 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ArrowLeft, MapPin, Navigation, Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { ArrowLeft, MapPin, Navigation, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function MapPage() {
   const [isAddingPin, setIsAddingPin] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
   const [pins, setPins] = useState([
-    { id: 1, lat: 32.7767, lng: -96.7970, address: '123 Oak Street', status: 'Completed' },
-    { id: 2, lat: 32.7757, lng: -96.7980, address: '456 Pine Avenue', status: 'Pending' },
+    { id: 1, lat: 32.7767, lng: -96.797, address: "123 Oak Street", status: "Completed" },
+    { id: 2, lat: 32.7757, lng: -96.798, address: "456 Pine Avenue", status: "Pending" },
   ]);
-  
+
   const router = useRouter();
 
   const handleMyLocation = () => {
     setIsLocating(true);
-    
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           setCurrentLocation({ lat: latitude, lng: longitude });
           setIsLocating(false);
-          
+
           // Show success message
           alert(`📍 Located at: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
         },
         (error) => {
-          console.warn('Location access denied:', error);
+          console.warn("Location access denied:", error);
           setIsLocating(false);
-          alert('Unable to get your location. Please enable location services.');
+          alert("Unable to get your location. Please enable location services.");
         }
       );
     } else {
       setIsLocating(false);
-      alert('Geolocation is not supported by this browser.');
+      alert("Geolocation is not supported by this browser.");
     }
   };
 
   const navigateToProperty = (pin: { id: number; lat: number; lng: number; address: string; status: string }) => {
     if (currentLocation) {
       const url = `https://www.google.com/maps/dir/${currentLocation.lat},${currentLocation.lng}/${pin.lat},${pin.lng}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     } else {
       const url = `https://www.google.com/maps/search/?api=1&query=${pin.lat},${pin.lng}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     }
   };
 
   const handleAddPin = () => {
     setIsAddingPin(true);
-    
+
     // Try to get current location for pin
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -63,22 +63,22 @@ export default function MapPage() {
             lat: latitude,
             lng: longitude,
             address: `Property at ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
-            status: 'New'
+            status: "New",
           };
-          setPins(prev => [...prev, newPin]);
+          setPins((prev) => [...prev, newPin]);
           setIsAddingPin(false);
         },
         (error) => {
-          console.warn('Location access denied:', error);
+          console.warn("Location access denied:", error);
           // Fallback to Dallas area with slight randomization
           const newPin = {
             id: pins.length + 1,
-            lat: 32.7760 + (Math.random() - 0.5) * 0.01,
+            lat: 32.776 + (Math.random() - 0.5) * 0.01,
             lng: -96.7975 + (Math.random() - 0.5) * 0.01,
-            address: 'New Property (Estimated Location)',
-            status: 'New'
+            address: "New Property (Estimated Location)",
+            status: "New",
           };
-          setPins(prev => [...prev, newPin]);
+          setPins((prev) => [...prev, newPin]);
           setIsAddingPin(false);
         }
       );
@@ -87,12 +87,12 @@ export default function MapPage() {
       setTimeout(() => {
         const newPin = {
           id: pins.length + 1,
-          lat: 32.7760 + (Math.random() - 0.5) * 0.01,
+          lat: 32.776 + (Math.random() - 0.5) * 0.01,
           lng: -96.7975 + (Math.random() - 0.5) * 0.01,
-          address: 'New Property',
-          status: 'New'
+          address: "New Property",
+          status: "New",
         };
-        setPins(prev => [...prev, newPin]);
+        setPins((prev) => [...prev, newPin]);
         setIsAddingPin(false);
       }, 1000);
     }
@@ -103,7 +103,7 @@ export default function MapPage() {
       {/* Header */}
       <div className="bg-gray-800 px-4 py-4 flex items-center shadow-lg">
         <button
-          onClick={() => router.push('/dashboard')}
+          onClick={() => router.push("/dashboard")}
           className="p-2 hover:bg-gray-700 rounded-lg transition-colors mr-3 btn-touch"
         >
           <ArrowLeft size={24} />
@@ -128,15 +128,12 @@ export default function MapPage() {
           <div className="text-center">
             <MapPin size={48} className="mx-auto mb-4 text-gray-600" />
             <h3 className="text-lg font-semibold mb-2">Interactive Map</h3>
-            <p className="text-gray-400 mb-4">
-              Google Maps integration would be displayed here
-            </p>
+            <p className="text-gray-400 mb-4">Google Maps integration would be displayed here</p>
             <div className="text-sm text-gray-500">
               • View properties on map
               <br />
               • Drop pins for new properties
-              <br />
-              • Navigate to locations
+              <br />• Navigate to locations
             </div>
           </div>
         </div>
@@ -144,25 +141,21 @@ export default function MapPage() {
         {/* Quick Actions */}
         <div className="px-6 py-4 bg-gray-850">
           <div className="flex space-x-3">
-            <button 
+            <button
               onClick={handleMyLocation}
               disabled={isLocating}
               className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 rounded-lg p-3 flex items-center justify-center space-x-2 transition-colors btn-touch"
             >
               <Navigation size={18} />
-              <span className="text-sm">
-                {isLocating ? 'Locating...' : 'My Location'}
-              </span>
+              <span className="text-sm">{isLocating ? "Locating..." : "My Location"}</span>
             </button>
-            <button 
+            <button
               onClick={handleAddPin}
               disabled={isAddingPin}
               className="flex-1 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-600 rounded-lg p-3 flex items-center justify-center space-x-2 transition-colors btn-touch"
             >
               <MapPin size={18} />
-              <span className="text-sm">
-                {isAddingPin ? 'Adding...' : 'Drop Pin'}
-              </span>
+              <span className="text-sm">{isAddingPin ? "Adding..." : "Drop Pin"}</span>
             </button>
           </div>
         </div>
@@ -180,13 +173,18 @@ export default function MapPage() {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    pin.status === 'Completed' ? 'status-completed' :
-                    pin.status === 'Pending' ? 'status-pending' : 'status-in-progress'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      pin.status === "Completed"
+                        ? "status-completed"
+                        : pin.status === "Pending"
+                          ? "status-pending"
+                          : "status-in-progress"
+                    }`}
+                  >
                     {pin.status}
                   </span>
-                  <button 
+                  <button
                     onClick={() => navigateToProperty(pin)}
                     className="text-blue-400 hover:text-blue-300 btn-touch"
                     title="Navigate to property"
@@ -214,4 +212,4 @@ export default function MapPage() {
       </div>
     </div>
   );
-} 
+}

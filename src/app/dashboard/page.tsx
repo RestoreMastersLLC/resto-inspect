@@ -1,19 +1,29 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { 
-  Menu, Bell, User, FileText, MapPin, Folder, Settings, LogOut, 
-  Navigation, Upload, Wifi, WifiOff
-} from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import {
+  Menu,
+  Bell,
+  User,
+  FileText,
+  MapPin,
+  Folder,
+  Settings,
+  LogOut,
+  Navigation,
+  Upload,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
-  const [userName] = useState('Alex Rodriguez');
+  const [userName] = useState("Alex Rodriguez");
   const [showMenu, setShowMenu] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [pendingUploads] = useState(2);
   const [currentLocation, setCurrentLocation] = useState<string | null>(null);
-  
+
   const router = useRouter();
 
   // Location effect
@@ -24,13 +34,13 @@ export default function DashboardPage() {
           setCurrentLocation(`${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`);
         },
         (error) => {
-          console.warn('Location access not available:', error.message);
+          console.warn("Location access not available:", error.message);
           setCurrentLocation(null);
         },
         {
           timeout: 10000,
           maximumAge: 60000,
-          enableHighAccuracy: false
+          enableHighAccuracy: false,
         }
       );
     }
@@ -41,12 +51,12 @@ export default function DashboardPage() {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
@@ -56,7 +66,7 @@ export default function DashboardPage() {
   };
 
   const handleLogout = () => {
-    router.push('/');
+    router.push("/");
     setShowMenu(false);
   };
 
@@ -81,7 +91,9 @@ export default function DashboardPage() {
           )}
           <button className="p-3 hover:bg-white/10 rounded-xl transition-all duration-200 relative btn-touch backdrop-blur-sm">
             <Bell size={22} className="text-white" />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold shadow-lg border-2 border-gray-900">3</span>
+            <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold shadow-lg border-2 border-gray-900">
+              3
+            </span>
           </button>
           <button className="p-3 hover:bg-white/10 rounded-xl transition-all duration-200 btn-touch backdrop-blur-sm">
             <User size={22} className="text-white" />
@@ -93,15 +105,17 @@ export default function DashboardPage() {
         {/* Enhanced Welcome Section */}
         <div className="mb-16 sm:mb-20">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-white">👋 Welcome back, {userName}</h2>
-          <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-10">Ready to inspect properties and help communities recover</p>
-          
+          <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-10">
+            Ready to inspect properties and help communities recover
+          </p>
+
           {currentLocation && (
             <div className="flex items-center space-x-2 text-gray-400 text-sm mb-10 bg-gray-800/50 rounded-xl px-4 py-4 backdrop-blur-sm border border-gray-700/30">
               <Navigation size={16} />
               <span>Current location: {currentLocation}</span>
             </div>
           )}
-          
+
           {/* Daily Progress Bar */}
           <div className="bg-gray-800/40 rounded-2xl p-8 border border-gray-700/30 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-6">
@@ -109,7 +123,10 @@ export default function DashboardPage() {
               <span className="text-gray-400 text-sm">12/15 inspections</span>
             </div>
             <div className="w-full bg-gray-700/50 rounded-full h-3 mb-6">
-              <div className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-500" style={{ width: '80%' }}></div>
+              <div
+                className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-500"
+                style={{ width: "80%" }}
+              ></div>
             </div>
             <div className="flex justify-between text-sm text-gray-400">
               <span>80% complete</span>
@@ -156,7 +173,7 @@ export default function DashboardPage() {
         {/* Enhanced Action Cards */}
         <div className="space-y-4 sm:space-y-5 mb-16 sm:mb-20">
           <button
-            onClick={() => navigateTo('/inspection/address')}
+            onClick={() => navigateTo("/inspection/address")}
             className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-2xl p-8 flex items-center space-x-6 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 shadow-xl hover:shadow-2xl ripple haptic-medium border border-blue-500/20"
           >
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-5 flex-shrink-0">
@@ -169,7 +186,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            onClick={() => navigateTo('/map')}
+            onClick={() => navigateTo("/map")}
             className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-2xl p-8 flex items-center space-x-6 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 shadow-xl hover:shadow-2xl ripple haptic-medium border border-orange-500/20"
           >
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-5 flex-shrink-0">
@@ -182,7 +199,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            onClick={() => navigateTo('/submissions')}
+            onClick={() => navigateTo("/submissions")}
             className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 rounded-2xl p-8 flex items-center space-x-6 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 shadow-xl hover:shadow-2xl ripple haptic-medium border border-purple-500/20"
           >
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-5 flex-shrink-0">
@@ -199,8 +216,8 @@ export default function DashboardPage() {
         <div className="mb-20 sm:mb-26">
           <div className="flex items-center justify-between mb-12">
             <h3 className="text-xl font-bold text-white">🕐 Recent Activity</h3>
-            <button 
-              onClick={() => navigateTo('/submissions')}
+            <button
+              onClick={() => navigateTo("/submissions")}
               className="text-blue-400 text-sm hover:text-blue-300 transition-colors font-medium"
             >
               View All →
@@ -216,12 +233,10 @@ export default function DashboardPage() {
                   </div>
                   <p className="text-gray-400 text-sm">Completed • 8 photos • 2 hours ago</p>
                 </div>
-                <div className="text-green-400 text-xs bg-green-400/10 px-3 py-2 rounded-full font-medium">
-                  ✓ Done
-                </div>
+                <div className="text-green-400 text-xs bg-green-400/10 px-3 py-2 rounded-full font-medium">✓ Done</div>
               </div>
             </div>
-            
+
             <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/30">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
@@ -246,9 +261,7 @@ export default function DashboardPage() {
                   </div>
                   <p className="text-gray-400 text-sm">Submitted • 12 photos • 3 hours ago</p>
                 </div>
-                <div className="text-blue-400 text-xs bg-blue-400/10 px-3 py-2 rounded-full font-medium">
-                  📤 Sent
-                </div>
+                <div className="text-blue-400 text-xs bg-blue-400/10 px-3 py-2 rounded-full font-medium">📤 Sent</div>
               </div>
             </div>
           </div>
@@ -258,8 +271,8 @@ export default function DashboardPage() {
         <div className="mb-20 sm:mb-26">
           <h3 className="text-xl font-bold text-white mb-12">⚡ Quick Actions</h3>
           <div className="grid grid-cols-2 gap-8 sm:gap-10">
-            <button 
-              onClick={() => navigateTo('/inspection/media')}
+            <button
+              onClick={() => navigateTo("/inspection/media")}
               className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 sm:p-10 border border-gray-700/30 hover:bg-gray-700/50 transition-all btn-touch ripple haptic-medium"
             >
               <div className="text-center">
@@ -268,8 +281,8 @@ export default function DashboardPage() {
                 <div className="text-gray-400 text-sm">Capture damage</div>
               </div>
             </button>
-            <button 
-              onClick={() => navigateTo('/map')}
+            <button
+              onClick={() => navigateTo("/map")}
               className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 sm:p-10 border border-gray-700/30 hover:bg-gray-700/50 transition-all btn-touch ripple haptic-medium"
             >
               <div className="text-center">
@@ -280,27 +293,24 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
-        </div>
+      </div>
 
       {/* Enhanced Menu Drawer */}
-              {showMenu && (
-          <>
-            <div
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
-              onClick={() => setShowMenu(false)}
-            ></div>
-            <div className="fixed left-0 top-0 bottom-0 w-72 sm:w-80 bg-gray-800 z-50 slide-in-left shadow-2xl">
-              <div className="p-4 sm:p-6 safe-area-top">
-                <div className="flex items-center space-x-3 mb-6 sm:mb-8">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-base sm:text-lg font-bold">A</span>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-sm sm:text-base truncate">{userName}</p>
-                    <p className="text-xs sm:text-sm text-gray-400">Field Inspector</p>
-                  </div>
+      {showMenu && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowMenu(false)}></div>
+          <div className="fixed left-0 top-0 bottom-0 w-72 sm:w-80 bg-gray-800 z-50 slide-in-left shadow-2xl">
+            <div className="p-4 sm:p-6 safe-area-top">
+              <div className="flex items-center space-x-3 mb-6 sm:mb-8">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-base sm:text-lg font-bold">A</span>
                 </div>
-              
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-sm sm:text-base truncate">{userName}</p>
+                  <p className="text-xs sm:text-sm text-gray-400">Field Inspector</p>
+                </div>
+              </div>
+
               {/* Connection status in menu */}
               <div className="mb-6">
                 {isOnline ? (
@@ -317,32 +327,47 @@ export default function DashboardPage() {
                 )}
               </div>
 
-                              <nav className="space-y-1 sm:space-y-2">
-                  <button onClick={() => navigateTo('/dashboard')} className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left">
-                    <FileText size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-sm sm:text-base">Home</span>
-                  </button>
-                  <button onClick={() => navigateTo('/inspection/address')} className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left">
-                    <FileText size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-sm sm:text-base">New Inspection</span>
-                  </button>
-                  <button onClick={() => navigateTo('/map')} className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left">
-                    <MapPin size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-sm sm:text-base">Spot a Damaged Property</span>
-                  </button>
-                  <button onClick={() => navigateTo('/submissions')} className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left">
-                    <Folder size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-sm sm:text-base">My Submissions</span>
-                  </button>
-                  <button className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left">
-                    <Settings size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-sm sm:text-base">Settings</span>
-                  </button>
-                  <button onClick={handleLogout} className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors text-red-400 btn-touch text-left">
-                    <LogOut size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-sm sm:text-base">Logout</span>
-                  </button>
-                </nav>
+              <nav className="space-y-1 sm:space-y-2">
+                <button
+                  onClick={() => navigateTo("/dashboard")}
+                  className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left"
+                >
+                  <FileText size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">Home</span>
+                </button>
+                <button
+                  onClick={() => navigateTo("/inspection/address")}
+                  className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left"
+                >
+                  <FileText size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">New Inspection</span>
+                </button>
+                <button
+                  onClick={() => navigateTo("/map")}
+                  className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left"
+                >
+                  <MapPin size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">Spot a Damaged Property</span>
+                </button>
+                <button
+                  onClick={() => navigateTo("/submissions")}
+                  className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left"
+                >
+                  <Folder size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">My Submissions</span>
+                </button>
+                <button className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors btn-touch text-left">
+                  <Settings size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">Settings</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition-colors text-red-400 btn-touch text-left"
+                >
+                  <LogOut size={18} className="sm:w-5 sm:h-5 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">Logout</span>
+                </button>
+              </nav>
             </div>
           </div>
         </>
@@ -359,4 +384,4 @@ export default function DashboardPage() {
       )}
     </div>
   );
-} 
+}

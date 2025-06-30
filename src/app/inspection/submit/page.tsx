@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { ArrowLeft, CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function InspectionSubmitPage() {
   const [currentStep] = useState(3);
   const [totalSteps] = useState(3);
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState("");
   const [isUrgent, setIsUrgent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const router = useRouter();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    
+
     // Simulate submission process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     // Show success and redirect
-    alert('✅ Inspection submitted successfully!');
-    router.push('/dashboard');
+    alert("✅ Inspection submitted successfully!");
+    router.push("/dashboard");
   };
 
   return (
@@ -29,21 +29,23 @@ export default function InspectionSubmitPage() {
       {/* Header */}
       <div className="bg-gray-800 px-4 py-4 flex items-center shadow-lg">
         <button
-          onClick={() => router.push('/inspection/media')}
+          onClick={() => router.push("/inspection/media")}
           className="p-2 hover:bg-gray-700 rounded-lg transition-colors mr-3 btn-touch"
         >
           <ArrowLeft size={24} />
         </button>
         <div className="flex-1">
           <h1 className="text-lg font-semibold">Review & Submit</h1>
-          <div className="text-xs text-gray-400">Step {currentStep} of {totalSteps}</div>
+          <div className="text-xs text-gray-400">
+            Step {currentStep} of {totalSteps}
+          </div>
         </div>
       </div>
 
       {/* Progress Bar */}
       <div className="bg-gray-800 px-4 pb-2">
         <div className="w-full bg-gray-700 rounded-full h-2">
-          <div 
+          <div
             className="bg-blue-600 h-2 rounded-full transition-all duration-300"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           ></div>
@@ -112,8 +114,8 @@ export default function InspectionSubmitPage() {
         <div className="bg-yellow-900 border border-yellow-700 rounded-lg p-4 mb-6">
           <h4 className="font-medium mb-2">📱 Offline Support</h4>
           <p className="text-sm text-yellow-200">
-            Don&apos;t worry if you lose internet connection. This inspection will be saved locally 
-            and automatically uploaded when you&apos;re back online.
+            Don&apos;t worry if you lose internet connection. This inspection will be saved locally and automatically
+            uploaded when you&apos;re back online.
           </p>
         </div>
       </div>
@@ -131,10 +133,10 @@ export default function InspectionSubmitPage() {
               Submitting...
             </span>
           ) : (
-            '🚀 Submit Inspection'
+            "🚀 Submit Inspection"
           )}
         </button>
       </div>
     </div>
   );
-} 
+}

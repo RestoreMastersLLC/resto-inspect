@@ -1,13 +1,13 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { User, LoginForm } from '@/types';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { User, LoginForm } from "@/types";
 
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  
+
   // Actions
   login: (credentials: LoginForm) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
@@ -28,24 +28,24 @@ const useAuthStore = create<AuthState>()(
 
       login: async (credentials: LoginForm) => {
         set({ isLoading: true, error: null });
-        
+
         try {
           // In a real app, this would call your authentication API
-          const response = await fetch('/api/auth/login', {
-            method: 'POST',
+          const response = await fetch("/api/auth/login", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify(credentials),
           });
 
           if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.message || 'Login failed');
+            throw new Error(errorData.message || "Login failed");
           }
 
           const userData = await response.json();
-          
+
           set({
             user: userData.user,
             isAuthenticated: true,
@@ -54,7 +54,7 @@ const useAuthStore = create<AuthState>()(
           });
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : 'Login failed',
+            error: error instanceof Error ? error.message : "Login failed",
             isLoading: false,
           });
           throw error;
@@ -63,18 +63,18 @@ const useAuthStore = create<AuthState>()(
 
       loginWithGoogle: async () => {
         set({ isLoading: true, error: null });
-        
+
         try {
           // In a real app, this would integrate with Google OAuth
           // For demo purposes, we'll simulate a successful login
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
           const mockUser: User = {
-            id: 'google-user-123',
-            email: 'user@gmail.com',
-            name: 'Google User',
-            role: 'inspector',
-            avatar: 'https://via.placeholder.com/100x100?text=GU'
+            id: "google-user-123",
+            email: "user@gmail.com",
+            name: "Google User",
+            role: "inspector",
+            avatar: "https://via.placeholder.com/100x100?text=GU",
           };
 
           set({
@@ -85,7 +85,7 @@ const useAuthStore = create<AuthState>()(
           });
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : 'Google login failed',
+            error: error instanceof Error ? error.message : "Google login failed",
             isLoading: false,
           });
           throw error;
@@ -94,15 +94,15 @@ const useAuthStore = create<AuthState>()(
 
       loginAsGuest: async () => {
         set({ isLoading: true, error: null });
-        
+
         try {
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
           const guestUser: User = {
-            id: 'guest-user',
-            email: 'guest@example.com',
-            name: 'Guest User',
-            role: 'guest',
+            id: "guest-user",
+            email: "guest@example.com",
+            name: "Guest User",
+            role: "guest",
           };
 
           set({
@@ -113,7 +113,7 @@ const useAuthStore = create<AuthState>()(
           });
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : 'Guest login failed',
+            error: error instanceof Error ? error.message : "Guest login failed",
             isLoading: false,
           });
           throw error;
@@ -129,7 +129,7 @@ const useAuthStore = create<AuthState>()(
         });
 
         // In a real app, you might want to call the logout API
-        fetch('/api/auth/logout', { method: 'POST' }).catch(console.error);
+        fetch("/api/auth/logout", { method: "POST" }).catch(console.error);
       },
 
       refreshSession: async () => {
@@ -138,9 +138,9 @@ const useAuthStore = create<AuthState>()(
 
         try {
           // In a real app, this would refresh the user session
-          const response = await fetch('/api/auth/refresh', {
-            method: 'POST',
-            credentials: 'include',
+          const response = await fetch("/api/auth/refresh", {
+            method: "POST",
+            credentials: "include",
           });
 
           if (response.ok) {
@@ -151,7 +151,7 @@ const useAuthStore = create<AuthState>()(
             get().logout();
           }
         } catch (error) {
-          console.error('Session refresh failed:', error);
+          console.error("Session refresh failed:", error);
           get().logout();
         }
       },
@@ -164,13 +164,13 @@ const useAuthStore = create<AuthState>()(
         const { user } = get();
         if (user) {
           set({
-            user: { ...user, ...updates }
+            user: { ...user, ...updates },
           });
         }
       },
     }),
     {
-      name: 'restoInspect-auth',
+      name: "restoInspect-auth",
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
@@ -179,4 +179,4 @@ const useAuthStore = create<AuthState>()(
   )
 );
 
-export default useAuthStore; 
+export default useAuthStore;
