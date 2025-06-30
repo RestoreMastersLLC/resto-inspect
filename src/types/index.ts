@@ -4,7 +4,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'inspector' | 'admin' | 'guest';
+  role: "inspector" | "admin" | "guest";
   avatar?: string;
 }
 
@@ -17,7 +17,7 @@ export interface OwnerInfo {
 
 export interface MediaItem {
   id: string;
-  type: 'photo' | 'video';
+  type: "photo" | "video";
   url: string;
   thumbnail: string;
   filename: string;
@@ -27,9 +27,9 @@ export interface MediaItem {
   location?: GeolocationCoordinates;
   tags: string[];
   ownerInfo?: OwnerInfo;
-  uploadStatus: 'pending' | 'uploading' | 'completed' | 'failed';
+  uploadStatus: "pending" | "uploading" | "completed" | "failed";
   isCompressed: boolean;
-  quality: 'low' | 'medium' | 'high';
+  quality: "low" | "medium" | "high";
 }
 
 export interface Address {
@@ -80,15 +80,15 @@ export interface InspectionProgress {
   completedSteps: string[];
 }
 
-export type InspectionStatus = 
-  | 'draft' 
-  | 'in-progress' 
-  | 'pending-upload' 
-  | 'uploading' 
-  | 'submitted' 
-  | 'under-review' 
-  | 'completed' 
-  | 'rejected';
+export type InspectionStatus =
+  | "draft"
+  | "in-progress"
+  | "pending-upload"
+  | "uploading"
+  | "submitted"
+  | "under-review"
+  | "completed"
+  | "rejected";
 
 export interface DamageTemplate {
   id: string;
@@ -107,8 +107,8 @@ export interface LocationData {
 
 export interface OfflineQueueItem {
   id: string;
-  type: 'inspection' | 'media-upload' | 'pin-save';
-  data: any;
+  type: "inspection" | "media-upload" | "pin-save";
+  data: InspectionData | MediaItem | MapPin;
   priority: number;
   attempts: number;
   maxAttempts: number;
@@ -117,7 +117,7 @@ export interface OfflineQueueItem {
 }
 
 export interface AppSettings {
-  photoQuality: 'low' | 'medium' | 'high';
+  photoQuality: "low" | "medium" | "high";
   autoSave: boolean;
   useLocation: boolean;
   offlineMode: boolean;
@@ -129,7 +129,7 @@ export interface NotificationData {
   id: string;
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: "info" | "success" | "warning" | "error";
   timestamp: Date;
   isRead: boolean;
   actionUrl?: string;
@@ -180,8 +180,8 @@ export interface InspectionFilters {
 export interface SearchOptions {
   query: string;
   filters: InspectionFilters;
-  sortBy: 'date' | 'status' | 'distance' | 'urgency';
-  sortOrder: 'asc' | 'desc';
+  sortBy: "date" | "status" | "distance" | "urgency";
+  sortOrder: "asc" | "desc";
   page: number;
   limit: number;
-} 
+}

@@ -1,57 +1,60 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ArrowLeft, Search, RefreshCw } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { ArrowLeft, Search, RefreshCw } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Mock data
 const mockSubmissions = [
-  { id: 1, date: '2025-01-04', address: '123 Oak Street', photos: 8, status: 'Completed', distance: '0.3 km' },
-  { id: 2, date: '2025-01-03', address: '456 Pine Avenue', photos: 12, status: 'Pending Review', distance: '1.2 km' },
-  { id: 3, date: '2025-01-03', address: '789 Maple Drive', photos: 6, status: 'Completed', distance: '2.1 km' },
-  { id: 4, date: '2025-01-02', address: '321 Elm Street', photos: 15, status: 'In Progress', distance: '0.8 km' },
-  { id: 5, date: '2025-01-01', address: '555 Cedar Lane', photos: 9, status: 'Under Review', distance: '1.5 km' },
+  { id: 1, date: "2025-01-04", address: "123 Oak Street", photos: 8, status: "Completed", distance: "0.3 km" },
+  { id: 2, date: "2025-01-03", address: "456 Pine Avenue", photos: 12, status: "Pending Review", distance: "1.2 km" },
+  { id: 3, date: "2025-01-03", address: "789 Maple Drive", photos: 6, status: "Completed", distance: "2.1 km" },
+  { id: 4, date: "2025-01-02", address: "321 Elm Street", photos: 15, status: "In Progress", distance: "0.8 km" },
+  { id: 5, date: "2025-01-01", address: "555 Cedar Lane", photos: 9, status: "Under Review", distance: "1.5 km" },
 ];
 
 export default function SubmissionsPage() {
   const [submissions] = useState(mockSubmissions);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
-  
+
   const router = useRouter();
 
   // Filter submissions based on search
-  const filteredSubmissions = submissions.filter(submission =>
-    submission.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    submission.status.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredSubmissions = submissions.filter(
+    (submission) =>
+      submission.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      submission.status.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsRefreshing(false);
   };
 
   const viewSubmissionDetails = (submissionId: number) => {
     // In a real app, navigate to detailed submission view
-    const submission = submissions.find(s => s.id === submissionId);
+    const submission = submissions.find((s) => s.id === submissionId);
     if (submission) {
-      alert(`📋 Viewing details for:\n${submission.address}\nStatus: ${submission.status}\nPhotos: ${submission.photos}`);
+      alert(
+        `📋 Viewing details for:\n${submission.address}\nStatus: ${submission.status}\nPhotos: ${submission.photos}`
+      );
     }
   };
 
   const getStatusStyles = (status: string) => {
     switch (status) {
-      case 'Completed':
-        return 'status-completed';
-      case 'Pending Review':
-      case 'Under Review':
-        return 'status-pending';
-      case 'In Progress':
-        return 'status-in-progress';
+      case "Completed":
+        return "status-completed";
+      case "Pending Review":
+      case "Under Review":
+        return "status-pending";
+      case "In Progress":
+        return "status-in-progress";
       default:
-        return 'status-pending';
+        return "status-pending";
     }
   };
 
@@ -60,7 +63,7 @@ export default function SubmissionsPage() {
       {/* Header */}
       <div className="bg-gray-800 px-4 py-4 flex items-center shadow-lg">
         <button
-          onClick={() => router.push('/dashboard')}
+          onClick={() => router.push("/dashboard")}
           className="p-2 hover:bg-gray-700 rounded-lg transition-colors mr-3 btn-touch"
         >
           <ArrowLeft size={24} />
@@ -71,7 +74,7 @@ export default function SubmissionsPage() {
           disabled={isRefreshing}
           className="p-2 hover:bg-gray-700 rounded-lg transition-colors btn-touch"
         >
-          <RefreshCw size={20} className={isRefreshing ? 'animate-spin' : ''} />
+          <RefreshCw size={20} className={isRefreshing ? "animate-spin" : ""} />
         </button>
       </div>
 
@@ -101,13 +104,13 @@ export default function SubmissionsPage() {
           </div>
           <div className="bg-gray-800 rounded-lg p-3 text-center">
             <div className="text-lg font-bold text-green-400">
-              {submissions.filter(s => s.status === 'Completed').length}
+              {submissions.filter((s) => s.status === "Completed").length}
             </div>
             <div className="text-xs text-gray-400">Completed</div>
           </div>
           <div className="bg-gray-800 rounded-lg p-3 text-center">
             <div className="text-lg font-bold text-yellow-400">
-              {submissions.filter(s => s.status.includes('Review')).length}
+              {submissions.filter((s) => s.status.includes("Review")).length}
             </div>
             <div className="text-xs text-gray-400">Under Review</div>
           </div>
@@ -129,7 +132,7 @@ export default function SubmissionsPage() {
                   <span>📷 {submission.photos} photos</span>
                   <span>📍 {submission.distance}</span>
                 </div>
-                <button 
+                <button
                   onClick={() => viewSubmissionDetails(submission.id)}
                   className="text-blue-400 hover:text-blue-300 btn-touch"
                 >
@@ -147,12 +150,12 @@ export default function SubmissionsPage() {
               <Search size={48} className="mx-auto mb-2 opacity-50" />
               <p>No submissions found</p>
               <p className="text-sm">
-                {searchQuery ? 'Try adjusting your search terms' : 'Start your first inspection to see reports here'}
+                {searchQuery ? "Try adjusting your search terms" : "Start your first inspection to see reports here"}
               </p>
             </div>
             {!searchQuery && (
               <button
-                onClick={() => router.push('/inspection/address')}
+                onClick={() => router.push("/inspection/address")}
                 className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors btn-touch"
               >
                 Start New Inspection
@@ -170,4 +173,4 @@ export default function SubmissionsPage() {
       </div>
     </div>
   );
-} 
+}

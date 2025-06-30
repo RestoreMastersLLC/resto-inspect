@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ArrowLeft, Search, Navigation, MapPin } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { ArrowLeft, Search, Navigation, MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function InspectionAddressPage() {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
   const [currentStep] = useState(1);
   const [totalSteps] = useState(3);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  
+
   const router = useRouter();
 
   const addressSuggestions = [
-    '123 Oak Street, Arlington, TX',
-    '456 Pine Avenue, Arlington, TX', 
-    '789 Maple Drive, Arlington, TX',
-    '321 Elm Street, Arlington, TX'
+    "123 Oak Street, Arlington, TX",
+    "456 Pine Avenue, Arlington, TX",
+    "789 Maple Drive, Arlington, TX",
+    "321 Elm Street, Arlington, TX",
   ];
 
   const useMyLocation = async () => {
@@ -30,7 +30,7 @@ export default function InspectionAddressPage() {
           setLastSaved(new Date());
         },
         () => {
-          alert('Unable to get your location. Please enter address manually.');
+          alert("Unable to get your location. Please enter address manually.");
         }
       );
     }
@@ -39,13 +39,13 @@ export default function InspectionAddressPage() {
   const handleNext = () => {
     if (address.trim()) {
       // Save the address data (in a real app, use context/state management)
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('inspection_address', address);
-        sessionStorage.setItem('inspection_started', new Date().toISOString());
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("inspection_address", address);
+        sessionStorage.setItem("inspection_started", new Date().toISOString());
       }
-      router.push('/inspection/media');
+      router.push("/inspection/media");
     } else {
-      alert('Please enter a valid address before continuing.');
+      alert("Please enter a valid address before continuing.");
     }
   };
 
@@ -54,26 +54,24 @@ export default function InspectionAddressPage() {
       {/* Enhanced Header with Progress */}
       <div className="bg-gray-800 px-4 py-4 flex items-center shadow-lg">
         <button
-          onClick={() => router.push('/dashboard')}
+          onClick={() => router.push("/dashboard")}
           className="p-2 hover:bg-gray-700 rounded-lg transition-colors mr-3 btn-touch"
         >
           <ArrowLeft size={24} />
         </button>
         <div className="flex-1">
           <h1 className="text-lg font-semibold">New Inspection</h1>
-          <div className="text-xs text-gray-400">Step {currentStep} of {totalSteps}</div>
-        </div>
-        {lastSaved && (
           <div className="text-xs text-gray-400">
-            Saved {lastSaved.toLocaleTimeString()}
+            Step {currentStep} of {totalSteps}
           </div>
-        )}
+        </div>
+        {lastSaved && <div className="text-xs text-gray-400">Saved {lastSaved.toLocaleTimeString()}</div>}
       </div>
 
       {/* Progress Bar */}
       <div className="bg-gray-800 px-4 pb-2">
         <div className="w-full bg-gray-700 rounded-full h-2">
-          <div 
+          <div
             className="bg-blue-600 h-2 rounded-full transition-all duration-300"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           ></div>
@@ -110,7 +108,7 @@ export default function InspectionAddressPage() {
           {address && (
             <div className="bg-gray-800 rounded-lg border border-gray-700 shadow-lg">
               {addressSuggestions
-                .filter(addr => addr.toLowerCase().includes(address.toLowerCase()))
+                .filter((addr) => addr.toLowerCase().includes(address.toLowerCase()))
                 .map((suggestion, index) => (
                   <button
                     key={index}
@@ -164,4 +162,4 @@ export default function InspectionAddressPage() {
       </div>
     </div>
   );
-} 
+}

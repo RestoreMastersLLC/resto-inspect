@@ -1,6 +1,6 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { MediaItem } from '@/types';
-import Compressor from 'compressorjs';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { MediaItem } from "@/types";
+import Compressor from "compressorjs";
 
 interface UploadProgress {
   loaded: number;
@@ -10,7 +10,7 @@ interface UploadProgress {
 
 interface UploadOptions {
   onProgress?: (progress: UploadProgress) => void;
-  quality?: 'low' | 'medium' | 'high';
+  quality?: "low" | "medium" | "high";
   maxWidth?: number;
   maxHeight?: number;
 }
@@ -22,14 +22,14 @@ class StorageService {
   private region: string;
 
   private constructor() {
-    this.region = process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1';
-    this.bucketName = process.env.NEXT_PUBLIC_S3_BUCKET_NAME || '';
-    
+    this.region = process.env.NEXT_PUBLIC_AWS_REGION || "us-east-1";
+    this.bucketName = process.env.NEXT_PUBLIC_S3_BUCKET_NAME || "";
+
     this.s3Client = new S3Client({
       region: this.region,
       credentials: {
-        accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY || '',
+        accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID || "",
+        secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY || "",
       },
     });
   }
@@ -44,21 +44,18 @@ class StorageService {
   /**
    * Compress image based on quality settings
    */
-  private compressImage(
-    file: File,
-    quality: 'low' | 'medium' | 'high' = 'medium'
-  ): Promise<File> {
+  private compressImage(file: File, quality: "low" | "medium" | "high" = "medium"): Promise<File> {
     return new Promise((resolve) => {
       const qualityMap = {
         low: 0.3,
         medium: 0.6,
-        high: 0.8
+        high: 0.8,
       };
 
       const maxWidthMap = {
         low: 800,
         medium: 1200,
-        high: 1920
+        high: 1920,
       };
 
       new Compressor(file, {
@@ -70,7 +67,7 @@ class StorageService {
           resolve(compressedFile as File);
         },
         error: (error) => {
-          console.error('Compression error:', error);
+          console.error("Compression error:", error);
           // Return original file if compression fails
           resolve(file);
         },
@@ -81,10 +78,10 @@ class StorageService {
   /**
    * Generate unique filename with timestamp and random suffix
    */
-  private generateFileName(originalName: string, prefix: string = 'media'): string {
+  private generateFileName(originalName: string, prefix: string = "media"): string {
     const timestamp = Date.now();
     const randomSuffix = Math.random().toString(36).substring(2, 8);
-    const extension = originalName.split('.').pop() || '';
+    const extension = originalName.split(".").pop() || "";
     return `${prefix}/${timestamp}-${randomSuffix}.${extension}`;
   }
 
@@ -100,14 +97,14 @@ class StorageService {
       let compressedSize: number | undefined;
 
       // Compress image if it's an image file
-      if (file.type.startsWith('image/')) {
+      if (file.type.startsWith("image/")) {
         const compressedFile = await this.compressImage(file, options.quality);
         fileToUpload = compressedFile;
         compressedSize = compressedFile.size;
       }
 
       const key = this.generateFileName(file.name);
-      
+
       const command = new PutObjectCommand({
         Bucket: this.bucketName,
         Key: key,
@@ -130,17 +127,17 @@ class StorageService {
         options.onProgress({
           loaded: fileToUpload.size,
           total: fileToUpload.size,
-          percentage: 100
+          percentage: 100,
         });
       }
 
       return {
         url,
         key,
-        compressedSize
+        compressedSize,
       };
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error("Upload error:", error);
       throw new Error(`Upload failed: ${error}`);
     }
   }
@@ -161,24 +158,24 @@ class StorageService {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       try {
         const result = await this.uploadFile(file, {
           ...options,
           onProgress: (progress) => {
             options.onFileProgress?.(i, progress);
-            
+
             const currentFileProgress = (progress.loaded / progress.total) * file.size;
             const overallProgress = {
               loaded: uploadedSize + currentFileProgress,
               total: totalSize,
-              percentage: Math.round(((uploadedSize + currentFileProgress) / totalSize) * 100)
+              percentage: Math.round(((uploadedSize + currentFileProgress) / totalSize) * 100),
             };
-            
+
             options.onOverallProgress?.(overallProgress);
-          }
+          },
         });
-        
+
         results.push(result);
         uploadedSize += file.size;
       } catch (error) {
@@ -207,15 +204,13 @@ class StorageService {
     } = {}
   ): Promise<MediaItem> {
     const uploadResult = await this.uploadFile(file, options);
-    
+
     // Create thumbnail for videos (in real app, you'd use a video processing service)
-    const thumbnail = file.type.startsWith('video/') 
-      ? '/api/video-thumbnail/' + uploadResult.key
-      : uploadResult.url;
+    const thumbnail = file.type.startsWith("video/") ? "/api/video-thumbnail/" + uploadResult.key : uploadResult.url;
 
     const mediaItem: MediaItem = {
       id: crypto.randomUUID(),
-      type: file.type.startsWith('video/') ? 'video' : 'photo',
+      type: file.type.startsWith("video/") ? "video" : "photo",
       url: uploadResult.url,
       thumbnail,
       filename: file.name,
@@ -225,9 +220,9 @@ class StorageService {
       location: options.location,
       tags: options.tags || [],
       ownerInfo: options.ownerInfo,
-      uploadStatus: 'completed',
+      uploadStatus: "completed",
       isCompressed: !!uploadResult.compressedSize,
-      quality: options.quality || 'medium'
+      quality: options.quality || "medium",
     };
 
     return mediaItem;
@@ -245,7 +240,7 @@ class StorageService {
 
       await this.s3Client.send(command);
     } catch (error) {
-      console.error('Delete error:', error);
+      console.error("Delete error:", error);
       throw new Error(`Delete failed: ${error}`);
     }
   }
@@ -253,13 +248,10 @@ class StorageService {
   /**
    * Generate presigned URL for direct upload (for large files)
    */
-  async generatePresignedUrl(
-    filename: string,
-    contentType: string
-  ): Promise<string> {
+  async generatePresignedUrl(filename: string, contentType: string): Promise<string> {
     // In a real implementation, you'd generate a presigned URL with expiration
     // For now, return a placeholder
-    console.log('Content type:', contentType); // Avoid unused parameter warning
+    console.log("Content type:", contentType); // Avoid unused parameter warning
     const key = this.generateFileName(filename);
     return `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${key}`;
   }
@@ -288,7 +280,7 @@ class StorageService {
     return {
       totalFiles: 0,
       totalSize: 0,
-      usedSpace: '0 MB'
+      usedSpace: "0 MB",
     };
   }
 
@@ -308,17 +300,18 @@ class StorageService {
       } catch (error) {
         lastError = error as Error;
         console.warn(`Upload attempt ${attempt} failed:`, error);
-        
+
         if (attempt < maxRetries) {
           // Exponential backoff
           const delay = Math.pow(2, attempt) * 1000;
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
 
-    throw new Error(`Upload failed after ${maxRetries} attempts: ${lastError?.message || 'Unknown error'}`);
+    throw new Error(`Upload failed after ${maxRetries} attempts: ${lastError?.message || "Unknown error"}`);
   }
 }
 
-export default StorageService; 
+// Export singleton instance
+export default StorageService.getInstance();

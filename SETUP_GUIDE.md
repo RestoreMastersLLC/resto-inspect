@@ -114,6 +114,7 @@ NEXT_PUBLIC_MAX_FILES_PER_INSPECTION=20
 ### 2. Database Schema Setup
 
 #### For PostgreSQL:
+
 ```sql
 -- Create database
 CREATE DATABASE resto_inspect_dev;
@@ -178,6 +179,7 @@ CREATE INDEX idx_owner_info_media_item_id ON owner_info(media_item_id);
 ### 3. AWS S3 Bucket Setup
 
 #### Bucket Configuration:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -194,6 +196,7 @@ CREATE INDEX idx_owner_info_media_item_id ON owner_info(media_item_id);
 ```
 
 #### CORS Configuration:
+
 ```json
 [
   {
@@ -306,6 +309,7 @@ npx husky add .husky/pre-push "npm run type-check && npm test"
 ### 9. VSCode Settings
 
 Create `.vscode/settings.json`:
+
 ```json
 {
   "editor.formatOnSave": true,
@@ -320,6 +324,7 @@ Create `.vscode/settings.json`:
 ### 10. Initial Testing
 
 After setup, test these features:
+
 - [ ] App loads at `http://localhost:3000`
 - [ ] GPS location works (requires HTTPS in production)
 - [ ] Camera access works on mobile devices
@@ -330,6 +335,7 @@ After setup, test these features:
 ### Troubleshooting
 
 #### Common Issues:
+
 1. **Camera not working**: Ensure HTTPS in production, test on real device
 2. **GPS permission denied**: Check browser settings, test location services
 3. **S3 upload fails**: Verify CORS settings and IAM permissions
@@ -337,6 +343,7 @@ After setup, test these features:
 5. **Google Maps not loading**: Verify API key and enabled services
 
 #### Mobile Testing:
+
 - Use Chrome DevTools device emulation
 - Test on actual iOS/Android devices
 - Check console for permission errors
@@ -344,4 +351,4 @@ After setup, test these features:
 
 ---
 
-**Ready to start development? Follow the Implementation Checklist for detailed tasks!** 
+**Ready to start development? Follow the Implementation Checklist for detailed tasks!**

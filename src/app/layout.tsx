@@ -55,9 +55,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body
-        className={`${inter.variable} font-sans bg-gray-900 text-white min-h-screen antialiased overflow-x-hidden`}
-      >
+      <body className={`${inter.variable} font-sans bg-gray-900 text-white min-h-screen antialiased overflow-x-hidden`}>
         <div id="app-root" className="min-h-screen">
           {children}
         </div>
