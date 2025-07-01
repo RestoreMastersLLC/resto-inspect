@@ -51,7 +51,7 @@ jobs:
         run: npm ci
 
       - name: Run TypeScript compiler
-        run: npx tsc --noEmit
+        run: npm run type-check
 
   build:
     name: Build Application
@@ -121,31 +121,3 @@ jobs:
 
       - name: Run npm audit
         run: npm audit --audit-level=moderate
-
-  deploy-preview:
-    name: Deploy Preview
-    runs-on: ubuntu-latest
-    needs: [build]
-    if: github.event_name == 'pull_request'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to Vercel Preview
-        run: echo "Add Vercel deployment steps here"
-        # Add actual Vercel deployment when configured
-
-  deploy-production:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    needs: [build, test]
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to Production
-        run: echo "Add production deployment steps here"
-        # Add actual production deployment when configured
