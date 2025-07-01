@@ -1,0 +1,277 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  INSPECTOR
+  VIEWER
+}
+
+enum InspectionStatus {
+  DRAFT
+  IN_PROGRESS
+  PENDING_UPLOAD
+  UPLOADING
+  SUBMITTED
+  UNDER_REVIEW
+  COMPLETED
+  REJECTED
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+}
+
+enum MediaUploadStatus {
+  PENDING
+  UPLOADING
+  COMPLETED
+  FAILED
+}
+
+enum MediaQuality {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+// Models
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  passwordHash String       @map("password_hash")
+  firstName    String?      @map("first_name")
+  lastName     String?      @map("last_name")
+  name         String       @default("")
+  role         UserRole     @default(INSPECTOR)
+  avatarUrl    String?      @map("avatar_url")
+  isActive     Boolean      @default(true) @map("is_active")
+  lastLogin    DateTime?    @map("last_login")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  inspections  Inspection[]
+  auditLogs    AuditLog[]
+
+  @@map("users")
+}
+
+model Inspection {
+  id               String           @id @default(uuid())
+  userId           String           @map("user_id")
+  status           InspectionStatus @default(DRAFT)
+  notes            String?
+  isUrgent         Boolean          @default(false) @map("is_urgent")
+  startedAt        DateTime         @default(now()) @map("started_at")
+  completedAt      DateTime?        @map("completed_at")
+  submittedAt      DateTime?        @map("submitted_at")
+  draftSavedAt     DateTime?        @map("draft_saved_at")
+  distance         Float? // Distance from current location in meters
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  street           String
+  city             String
+  state            String
+  zipCode          String           @map("zip_code")
+  country          String           @default("USA")
+  addressFormatted String           @map("address_formatted")
+  latitude         Float?
+  longitude        Float?
+  currentStep      Int              @default(1) @map("current_step")
+  totalSteps       Int              @default(3) @map("total_steps")
+  completedSteps   Json             @default("[]") @map("completed_steps") // Array of step identifiers
+  user             User             @relation(fields: [userId], references: [id])
+  mediaItems       MediaItem[]
+  mapPins          MapPin[]
+  tags             InspectionTag[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("inspections")
+}
+
+model MediaItem {
+  id             String            @id @default(uuid())
+  inspectionId   String            @map("inspection_id")
+  type           MediaType
+  url            String
+  thumbnailUrl   String?           @map("thumbnail_url")
+  filename       String
+  fileSize       Int               @map("file_size") // in bytes
+  compressedSize Int?              @map("compressed_size") // in bytes
+  uploadStatus   MediaUploadStatus @default(PENDING) @map("upload_status")
+  isCompressed   Boolean           @default(false) @map("is_compressed")
+  quality        MediaQuality      @default(MEDIUM)
+  latitude       Float?
+  longitude      Float?
+  capturedAt     DateTime          @default(now()) @map("captured_at")
+  createdAt      DateTime          @default(now()) @map("created_at")
+  inspection     Inspection        @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  ownerInfo      OwnerInfo[]
+  tags           MediaTag[]
+  mapPins        MapPinMedia[]
+
+  @@index([inspectionId])
+  @@map("media_items")
+}
+
+model OwnerInfo {
+  id          String    @id @default(uuid())
+  mediaItemId String    @map("media_item_id")
+  name        String
+  email       String?
+  phone       String?
+  role        String? // Their role/relationship to property
+  createdAt   DateTime  @default(now()) @map("created_at")
+  mediaItem   MediaItem @relation(fields: [mediaItemId], references: [id], onDelete: Cascade)
+
+  @@index([mediaItemId])
+  @@map("owner_info")
+}
+
+model MapPin {
+  id           String        @id @default(uuid())
+  inspectionId String        @map("inspection_id")
+  description  String
+  latitude     Float
+  longitude    Float
+  isUrgent     Boolean       @default(false) @map("is_urgent")
+  timestamp    DateTime      @default(now())
+  createdAt    DateTime      @default(now()) @map("created_at")
+  inspection   Inspection    @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  media        MapPinMedia[]
+
+  @@index([inspectionId])
+  @@map("map_pins")
+}
+
+// Junction table for many-to-many relationship between MapPin and MediaItem
+model MapPinMedia {
+  id          String    @id @default(uuid())
+  mapPinId    String    @map("map_pin_id")
+  mediaItemId String    @map("media_item_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  mapPin      MapPin    @relation(fields: [mapPinId], references: [id], onDelete: Cascade)
+  mediaItem   MediaItem @relation(fields: [mediaItemId], references: [id], onDelete: Cascade)
+
+  @@unique([mapPinId, mediaItemId])
+  @@map("map_pin_media")
+}
+
+model Tag {
+  id          String          @id @default(uuid())
+  name        String          @unique
+  createdAt   DateTime        @default(now()) @map("created_at")
+  inspections InspectionTag[]
+  mediaItems  MediaTag[]
+
+  @@map("tags")
+}
+
+// Junction table for many-to-many relationship between Inspection and Tag
+model InspectionTag {
+  id           String     @id @default(uuid())
+  inspectionId String     @map("inspection_id")
+  tagId        String     @map("tag_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  inspection   Inspection @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  tag          Tag        @relation(fields: [tagId], references: [id])
+
+  @@unique([inspectionId, tagId])
+  @@map("inspection_tags")
+}
+
+// Junction table for many-to-many relationship between MediaItem and Tag
+model MediaTag {
+  id          String    @id @default(uuid())
+  mediaItemId String    @map("media_item_id")
+  tagId       String    @map("tag_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  mediaItem   MediaItem @relation(fields: [mediaItemId], references: [id], onDelete: Cascade)
+  tag         Tag       @relation(fields: [tagId], references: [id])
+
+  @@unique([mediaItemId, tagId])
+  @@map("media_tags")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")
+  action    String // login, logout, failed_login, permission_denied, etc.
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  metadata  Json? // Additional context data
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  title     String
+  message   String
+  type      NotificationType @default(INFO)
+  isRead    Boolean          @default(false) @map("is_read")
+  actionUrl String?          @map("action_url")
+  userId    String?          @map("user_id") // Null for system-wide notifications
+  timestamp DateTime         @default(now())
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+// Settings stored as key-value pairs
+model AppSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       Json
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("app_settings")
+}
+
+// For offline sync queue
+model OfflineQueue {
+  id          String    @id @default(uuid())
+  type        String // inspection, media-upload, pin-save
+  data        Json // Serialized data
+  priority    Int       @default(0)
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3) @map("max_attempts")
+  lastAttempt DateTime? @map("last_attempt")
+  error       String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([type])
+  @@index([priority])
+  @@map("offline_queue")
+}
