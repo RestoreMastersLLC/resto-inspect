@@ -16,9 +16,6 @@ updates:
           - "next"
           - "react"
           - "react-dom"
-    labels:
-      - "dependencies"
-      - "npm"
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -30,9 +27,6 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    labels:
-      - "dependencies"
-      - "github-actions"
     commit-message:
       prefix: "chore"
       include: "scope"
