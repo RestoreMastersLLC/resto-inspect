@@ -76,6 +76,7 @@ class LocationService {
     if (!LocationService.instance) {
       LocationService.instance = new LocationService();
     }
+
     return LocationService.instance;
   }
 

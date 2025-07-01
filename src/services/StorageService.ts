@@ -1,6 +1,6 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { MediaItem } from "@/types";
 import Compressor from "compressorjs";
+import { MediaItem } from "@/types";
 
 interface UploadProgress {
   loaded: number;

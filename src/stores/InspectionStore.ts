@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { InspectionData, MediaItem, Address, MapPin, DamageTemplate, InspectionStatus, OwnerInfo } from "@/types";
 import locationService from "@/services/LocationService";
 import storageService from "@/services/StorageService";
 import offlineService from "@/services/OfflineService";
+import { InspectionData, MediaItem, Address, MapPin, DamageTemplate, InspectionStatus, OwnerInfo } from "@/types";
 
 interface InspectionState {
   currentInspection: InspectionData | null;
