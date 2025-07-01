@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Wifi, WifiOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,17 +11,32 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isOnline] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const router = useRouter();
 
   const handleLogin = async () => {
     setIsLoading(true);
+    setError("");
 
-    // Simulate login process
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    // Redirect to dashboard
-    router.push("/dashboard");
+      if (result?.error) {
+        setError("Invalid email or password");
+      } else if (result?.ok) {
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,6 +49,10 @@ export default function LoginPage() {
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 tracking-tight">RestoInspect</h1>
           <p className="text-gray-300 text-lg sm:text-xl font-medium">Field Reporting, Simplified.</p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/50 rounded-xl text-red-400 text-sm">{error}</div>
+        )}
 
         <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
           <input
@@ -69,7 +89,7 @@ export default function LoginPage() {
         </div>
 
         <button
-          onClick={handleLogin}
+          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
           disabled={isLoading}
           className="w-full bg-white hover:bg-gray-100 disabled:opacity-50 text-gray-900 font-semibold py-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 mb-4 btn-touch shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
         >

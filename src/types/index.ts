@@ -1,11 +1,43 @@
 // Core Types for RestoInspect Application
 
+export enum UserRole {
+  ADMIN = "admin",
+  INSPECTOR = "inspector",
+  VIEWER = "viewer",
+}
+
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: "inspector" | "admin" | "guest";
+  role: UserRole;
   avatar?: string;
+}
+
+// Define permissions for different features
+export enum Permission {
+  // Inspection permissions
+  CREATE_INSPECTION = "create_inspection",
+  VIEW_INSPECTION = "view_inspection",
+  EDIT_INSPECTION = "edit_inspection",
+  DELETE_INSPECTION = "delete_inspection",
+  SUBMIT_INSPECTION = "submit_inspection",
+
+  // User management permissions
+  VIEW_USERS = "view_users",
+  CREATE_USER = "create_user",
+  EDIT_USER = "edit_user",
+  DELETE_USER = "delete_user",
+
+  // Report permissions
+  VIEW_REPORTS = "view_reports",
+  GENERATE_REPORTS = "generate_reports",
+  EXPORT_REPORTS = "export_reports",
+
+  // System permissions
+  VIEW_ANALYTICS = "view_analytics",
+  MANAGE_SETTINGS = "manage_settings",
+  VIEW_AUDIT_LOGS = "view_audit_logs",
 }
 
 export interface OwnerInfo {
@@ -135,12 +167,21 @@ export interface NotificationData {
   actionUrl?: string;
 }
 
+// JWT types
+export interface TokenPayload {
+  id: string;
+  email: string;
+  role: UserRole;
+  exp?: number;
+}
+
 // API Response types
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
   error?: string;
   message?: string;
+  details?: unknown;
 }
 
 export interface PaginatedResponse<T> {
