@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User, LoginForm } from "@/types";
+import { User, LoginForm, UserRole } from "@/types";
 
 interface AuthState {
   user: User | null;
@@ -73,7 +73,7 @@ const useAuthStore = create<AuthState>()(
             id: "google-user-123",
             email: "user@gmail.com",
             name: "Google User",
-            role: "inspector",
+            role: UserRole.INSPECTOR,
             avatar: "https://via.placeholder.com/100x100?text=GU",
           };
 
@@ -102,7 +102,7 @@ const useAuthStore = create<AuthState>()(
             id: "guest-user",
             email: "guest@example.com",
             name: "Guest User",
-            role: "guest",
+            role: UserRole.VIEWER,
           };
 
           set({

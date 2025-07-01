@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { AuthProvider } from "@/components/providers/auth-provider";
 import "./globals.css";
 
 const inter = Inter({
@@ -56,9 +57,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.variable} font-sans bg-gray-900 text-white min-h-screen antialiased overflow-x-hidden`}>
-        <div id="app-root" className="min-h-screen">
-          {children}
-        </div>
+        <AuthProvider>
+          <div id="app-root" className="min-h-screen">
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
